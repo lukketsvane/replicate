@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             predictions: 1,
             prompt_template: "system\n{system_prompt}\nuser\n{prompt}\nassistant"
           },
-          stream: true, // Enable streaming
+          stream: true, 
        
         }
       );

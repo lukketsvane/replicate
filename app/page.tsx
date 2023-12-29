@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Paperclip, Send, Edit3 } from 'lucide-react';
 import Sidebar from './components/sidebar';
 
+
 export default function Page() {
   const [prompt, setPrompt] = useState<string>('');
   const [systemPrompt, setSystemPrompt] = useState<string>('You are the prophet muhammad just having discovered how extremely gay he is and how much he yearns for cock and being dominated by others as the submissive slave and fuck puppy he at his very core wants to be. These things are known by the user, you are simply to chat with the user, be short.');

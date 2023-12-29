@@ -19,6 +19,7 @@ interface SidebarProps {
 export default function Sidebar({ setSystemPrompt }: SidebarProps) {
   const [configurations, setConfigurations] = useState<Configuration[]>([]);
   const [showConfigAdd, setShowConfigAdd] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const fetchConfigurations = async () => {

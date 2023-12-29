@@ -3,10 +3,17 @@ import React, { useEffect, useState } from 'react';
 import { X, Menu, PlusCircle, MoreVertical, Edit3 } from 'lucide-react';
 import ConfigAdd from './ConfigAdd';
 
+interface Configuration {
+  id: number;
+  name: string;
+  systemPrompt: string;
+  avatar: string;
+}
+
 export default function Sidebar({ setSystemPrompt }) {
   const [isOpen, setIsOpen] = useState(false);
   const [showConfigAdd, setShowConfigAdd] = useState(false);
-  const [configurations, setConfigurations] = useState([]);
+  const [configurations, setConfigurations] = useState<Configuration[]>([]);
 
   useEffect(() => {
     const fetchConfigurations = async () => {
@@ -15,7 +22,7 @@ export default function Sidebar({ setSystemPrompt }) {
         if (!response.ok) {
           throw new Error('Failed to fetch configurations');
         }
-        const configs = await response.json();
+        const configs: Configuration[] = await response.json();
         setConfigurations(configs);
       } catch (error) {
         console.error('Error fetching configurations:', error);
@@ -25,7 +32,7 @@ export default function Sidebar({ setSystemPrompt }) {
     fetchConfigurations();
   }, []);
 
-  const handleAddNewConfig = (newConfig: any) => {
+  const handleAddNewConfig = (newConfig: Configuration) => {
     setConfigurations([...configurations, newConfig]);
     setShowConfigAdd(false);
   };
@@ -33,12 +40,12 @@ export default function Sidebar({ setSystemPrompt }) {
   const handleSidebarOpen = () => setIsOpen(true);
   const handleSidebarClose = () => setIsOpen(false);
 
-  const handleConfigurationClick = (config) => {
-    setSystemPrompt(config.system_prompt);
+  const handleConfigurationClick = (config: Configuration) => {
+    setSystemPrompt(config.systemPrompt);
     handleSidebarClose();
   };
 
-  const handleDeleteConfig = async (configId) => {
+  const handleDeleteConfig = async (configId: number) => {
     try {
       const response = await fetch(`/api/configurations/${configId}`, {
         method: 'DELETE',
@@ -82,8 +89,6 @@ export default function Sidebar({ setSystemPrompt }) {
               className="flex items-center p-2 hover:bg-gray-100 cursor-pointer relative"
               onClick={() => handleConfigurationClick(config)}
             >
-              {/* Disable linting for the following line */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={config.avatar} alt="avatar" className="w-8 h-8 rounded-full mr-2" />
               <span className="flex-1">{config.name}</span>
               <button onClick={(e) => { e.stopPropagation(); /* other code to show options */ }} className="p-1">

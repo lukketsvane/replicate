@@ -8,10 +8,8 @@ interface Configuration {
   name: string;
   systemPrompt: string;
   avatar: string; // assuming there is an avatar URL
-  // add other configuration properties as needed
 }
 
-// Update your existing SidebarProps interface to include the new method definition
 interface SidebarProps {
   setSystemPrompt: (prompt: string) => void;
 }
@@ -47,10 +45,11 @@ export default function Sidebar({ setSystemPrompt }: SidebarProps) {
   const handleSidebarOpen = () => setIsOpen(true);
   const handleSidebarClose = () => setIsOpen(false);
 
-  const handleConfigurationClick = (config) => {
+  const handleConfigurationClick = (config: Configuration) => {
     setSystemPrompt(config.system_prompt);
     handleSidebarClose();
   };
+  
 
   const handleDeleteConfig = async (configId) => {
     try {

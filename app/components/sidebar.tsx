@@ -3,14 +3,22 @@ import React, { useEffect, useState } from 'react';
 import { X, Menu, PlusCircle, MoreVertical, Edit3 } from 'lucide-react';
 import ConfigAdd from './ConfigAdd';
 import Image from 'next/image';
+interface Configuration {
+  id: string; // or number, depending on how your ID is structured
+  name: string;
+  systemPrompt: string;
+  avatar: string; // assuming there is an avatar URL
+  // add other configuration properties as needed
+}
 
-
+// Update your existing SidebarProps interface to include the new method definition
 interface SidebarProps {
   setSystemPrompt: (prompt: string) => void;
 }
-export default function Sidebar({ setSystemPrompt }: SidebarProps) {  const [isOpen, setIsOpen] = useState(false);
+
+export default function Sidebar({ setSystemPrompt }: SidebarProps) {
+  const [configurations, setConfigurations] = useState<Configuration[]>([]);
   const [showConfigAdd, setShowConfigAdd] = useState(false);
-  const [configurations, setConfigurations] = useState([]);
 
   useEffect(() => {
     const fetchConfigurations = async () => {
@@ -29,10 +37,11 @@ export default function Sidebar({ setSystemPrompt }: SidebarProps) {  const [isO
     fetchConfigurations();
   }, []);
 
-  const handleAddNewConfig = (newConfig) => {
+  const handleAddNewConfig = (newConfig: Configuration) => {
     setConfigurations([...configurations, newConfig]);
     setShowConfigAdd(false);
   };
+
 
   const handleSidebarOpen = () => setIsOpen(true);
   const handleSidebarClose = () => setIsOpen(false);

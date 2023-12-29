@@ -1,81 +1,136 @@
 "use client";
-import React, { useState } from 'react';
-import { PlusCircle } from 'lucide-react';
 
-export default function ConfigAdd({ onAdd }) {
-  const [configName, setConfigName] = useState('');
-  const [systemPrompt, setSystemPrompt] = useState('');
-  const [avatarURL, setAvatarURL] = useState('');
+import React, { useEffect, useState } from 'react';
+import { X, Menu, PlusCircle, MoreVertical, Edit3, Trash2 } from 'lucide-react';
+import ConfigAdd from './ConfigAdd';
 
-  const handleAddConfig = async () => {
-    const newConfig = {
-      name: configName,
-      systemPrompt: systemPrompt,
-      avatar: avatarURL,
+export default function Sidebar({ setSystemPrompt }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showConfigAdd, setShowConfigAdd] = useState(false);
+  const [configurations, setConfigurations] = useState([]);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [selectedConfigId, setSelectedConfigId] = useState(null);
+
+  useEffect(() => {
+    const fetchConfigurations = async () => {
+      try {
+        const response = await fetch('/api/configurations');
+        if (!response.ok) {
+          throw new Error('Failed to fetch configurations');
+        }
+        const configs = await response.json();
+        setConfigurations(configs);
+      } catch (error) {
+        console.error('Error fetching configurations:', error);
+      }
     };
-    // API call to add the new configuration to the database
-    const response = await fetch('/api/configurations', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newConfig),
-    });
 
-    if (response.ok) {
-      onAdd(newConfig); // Update parent state
-      setConfigName('');
-      setSystemPrompt('');
-      setAvatarURL('');
-    } else {
-      console.error('Failed to save the configuration');
+    fetchConfigurations();
+  }, []);
+
+  const handleAddNewConfig = (newConfig) => {
+    setConfigurations([...configurations, newConfig]);
+    setShowConfigAdd(false);
+  };
+
+  const handleDeleteConfig = async () => {
+    if (selectedConfigId) {
+      await fetch(`/api/configurations/${selectedConfigId}`, { method: 'DELETE' });
+      setConfigurations(configurations.filter((config) => config.id !== selectedConfigId));
+      setSelectedConfigId(null);
+      setShowDeleteConfirmation(false);
     }
   };
 
+  const handleSidebarOpen = () => setIsOpen(true);
+  const handleSidebarClose = () => setIsOpen(false);
+
+  const handleConfigurationClick = (config) => {
+    setSystemPrompt(config.system_prompt);
+    handleSidebarClose();
+  };
+
   return (
-    <div className="fixed inset-0 z-30 flex items-center justify-center p-4">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <div className="mb-4">
-          <label htmlFor="configName" className="block text-sm font-medium text-gray-700">Configuration Name</label>
-          <input
-            type="text"
-            id="configName"
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            value={configName}
-            onChange={(e) => setConfigName(e.target.value)}
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="systemPrompt" className="block text-sm font-medium text-gray-700">System Prompt</label>
-          <input
-            type="text"
-            id="systemPrompt"
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            value={systemPrompt}
-            onChange={(e) => setSystemPrompt(e.target.value)}
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="avatarURL" className="block text-sm font-medium text-gray-700">Avatar URL</label>
-          <input
-            type="text"
-            id="avatarURL"
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            value={avatarURL}
-            onChange={(e) => setAvatarURL(e.target.value)}
-          />
-        </div>
-        <div className="flex justify-end mt-4 space-x-2">
-          <button
-            type="button"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            onClick={handleAddConfig}
+    <>
+      <button onClick={handleSidebarOpen} className="absolute top-4 left-4 z-30">
+        <Menu className="w-6 h-6" />
+      </button>
+
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-20 bg-black opacity-50"
+          onClick={handleSidebarClose}
+        />
+      )}
+
+      <aside
+        className={`fixed top-0 left-0 z-30 w-64 h-full bg-white p-4 overflow-y-auto transform transition-transform duration-300 ease-in-out ${
+          isOpen ? 'translate-x-0' : '-translate-x-64'
+        }`}
+      >
+        <button onClick={handleSidebarClose} className="absolute top-4 right-4">
+          <X className="w-6 h-6" />
+        </button>
+
+        <nav className="mt-8">
+          {configurations.map((config) => (
+            <div
+              key={config.id}
+              className="flex items-center justify-between p-2 hover:bg-gray-100 cursor-pointer"
+              onClick={() => handleConfigurationClick(config)}
+            >
+              <div className="flex items-center">
+                <img src={config.avatar} alt="avatar" className="w-8 h-8 rounded-full mr-2" />
+                <span>{config.name}</span>
+              </div>
+              <div className="flex">
+                <button onClick={() => {}} className="p-1">
+                  <Edit3 className="w-4 h-4 text-gray-600" />
+                </button>
+                <button onClick={() => {
+                    setShowDeleteConfirmation(true);
+                    setSelectedConfigId(config.id);
+                  }} className="p-1">
+                  <Trash2 className="w-4 h-4 text-gray-600" />
+                </button>
+              </div>
+            </div>
+          ))}
+
+          <div
+            className="flex items-center justify-between p-2 mt-4 text-gray-700 font-semibold bg-gray-100 cursor-pointer hover:bg-gray-200"
+            onClick={() => setShowConfigAdd(true)}
           >
-            <PlusCircle className="w-5 h-5 mr-2" aria-hidden="true" />
-            Add Configuration
-          </button>
+            <PlusCircle className="w-6 h-6" />
+            <span>Create Config</span>
+          </div>
+        </nav>
+      </aside>
+
+      {showConfigAdd && <ConfigAdd onAdd={handleAddNewConfig} />}
+
+      {showDeleteConfirmation && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow p-4">
+            <h3 className="text-lg font-bold">Confirm Deletion</h3>
+            <p>Are you sure you want to delete this configuration?</p>
+            <div className="flex justify-end mt-4">
+              <button
+                className="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded mr-2"
+                onClick={() => setShowDeleteConfirmation(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                onClick={handleDeleteConfig}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }

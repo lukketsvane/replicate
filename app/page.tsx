@@ -19,7 +19,6 @@ export default function Page() {
   const handleInput = (e) => {
     setPrompt(e.target.value);
 
-    // Calculate the number of rows
     const currentRows = e.target.value.split('\n').length;
     if (currentRows <= 6) {
       setRows(currentRows);
@@ -101,7 +100,7 @@ export default function Page() {
     >
             <Sidebar setSystemPrompt={setSystemPrompt} />
       <div className="text-center p-4 border border-gray-200">
-        <h1 className="text-xl font-bold">Dolphin</h1>
+        <h1 className="text-xl font-medium">Dolphin</h1>
         <Edit3 className="cursor-pointer absolute top-4 right-4" onClick={handleNewChat} />
       </div>
       <div className="flex-grow overflow-auto p-4">

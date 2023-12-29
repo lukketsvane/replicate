@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { X, Menu, PlusCircle, MoreVertical, Edit3 } from 'lucide-react';
 import ConfigAdd from './ConfigAdd';
+import Image from 'next/image';
 
 export default function Sidebar({ setSystemPrompt }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -78,7 +79,13 @@ export default function Sidebar({ setSystemPrompt }) {
               className="flex items-center p-2 hover:bg-gray-100 cursor-pointer relative"
               onClick={() => handleConfigurationClick(config)}
             >
-              <img src={config.avatar} alt="avatar" className="w-8 h-8 rounded-full mr-2" />
+              <Image
+                src={config.avatar}
+                alt="avatar"
+                width={32} // Set the width as needed
+                height={32} // Set the height as needed
+                className="rounded-full"
+              />
               <span className="flex-1">{config.name}</span>
               <button onClick={(e) => { e.stopPropagation(); /* other code to show options */ }} className="p-1">
                 <MoreVertical className="w-5 h-5" />

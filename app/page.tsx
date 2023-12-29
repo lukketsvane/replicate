@@ -92,55 +92,55 @@ export default function Page() {
 
   return (
     <motion.div
-      className="flex flex-col h-screen justify-between"
-      style={{ backgroundColor: '#FFFFFF' }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+        className="flex flex-col h-screen justify-between"
+        style={{ backgroundColor: '#FFFFFF' }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
     >
-      <Sidebar setSystemPrompt={setSystemPrompt} />
-      <div className="text-center p-4 border-b border-gray-200">
-        <h1 className="text-xl font-medium">Dolphin</h1>
-        <Edit3 className="cursor-pointer absolute top-4 right-4" onClick={handleNewChat} />
-      </div>
-      <div className="flex-grow overflow-auto p-4">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`flex ${message.sender === 'AI' ? 'justify-start' : 'justify-end'} my-2`}
-          >
-            <div
-              className={`max-w-[70%] rounded-lg px-4 py-2 ${
-                message.sender === 'AI' ? 'bg-gray-200' : 'bg-blue-100'
-              }`}
-            >
-              {message.content}
-            </div>
-          </div>
-        ))}
-        <div ref={endOfMessagesRef} />
-      </div>
-      <div className="px-4 py-2 bg-gray-50">
-        <div className="relative flex items-end">
-          <Paperclip
-            className="absolute left-3 mb-2 bottom-0.5 cursor-pointer"
-            onClick={handleSystemPromptOpen}
-            style={{ transform: 'rotate(315deg)' }}
-          />
-
-          <textarea
-            className="w-full border border-gray-300 rounded-sm py-2 pl-12 pr-4"
-            style={{ borderRadius: '12px', overflow: 'hidden', resize: 'none' }}
-            placeholder="Write your message..."
-            value={prompt}
-            onChange={handleInput}
-            onKeyPress={handleKeyPress}
-            rows={rows}
-            disabled={isLoading}
-          />
-          <Send className="absolute right-4 bottom-2 cursor-pointer" onClick={handleSubmit} />
+        <Sidebar setSystemPrompt={setSystemPrompt} />
+        <div className="text-center p-4 border-b border-gray-200">
+            <h1 className="text-xl font-medium">Dolphin</h1>
+            <Edit3 className="cursor-pointer absolute top-4 right-4" onClick={handleNewChat} />
         </div>
-      </div>
+        <div className="flex-grow overflow-auto p-4" style={{ marginBottom: '100px' }}>
+            {messages.map((message, index) => (
+                <div
+                    key={index}
+                    className={`flex ${message.sender === 'AI' ? 'justify-start' : 'justify-end'} my-2`}
+                >
+                    <div
+                        className={`max-w-[70%] rounded-lg px-4 py-2 ${
+                            message.sender === 'AI' ? 'bg-gray-200' : 'bg-blue-100'
+                        }`}
+                    >
+                        {message.content}
+                    </div>
+                </div>
+            ))}
+            <div ref={endOfMessagesRef} />
+        </div>
+        <div className="fixed bottom-0 left-0 right-0 px-4 py-2 bg-gray-50">
+            <div className="relative flex items-end">
+                <Paperclip
+                    className="absolute left-3 mb-2 bottom-0.5 cursor-pointer"
+                    onClick={handleSystemPromptOpen}
+                    style={{ transform: 'rotate(315deg)' }}
+                />
+
+                <textarea
+                    className="w-full border border-gray-300 rounded-sm py-2 pl-12 pr-4"
+                    style={{ borderRadius: '12px', overflow: 'hidden', resize: 'none' }}
+                    placeholder="Write your message..."
+                    value={prompt}
+                    onChange={handleInput}
+                    onKeyPress={handleKeyPress}
+                    rows={rows}
+                    disabled={isLoading}
+                />
+                <Send className="absolute right-4 bottom-2 cursor-pointer" onClick={handleSubmit} />
+            </div>
+        </div>
       <div className="text-center text-xs text-gray-500 p-2">
         Dolphin can make mistakes. Made with love by @lukketsvane
       </div>

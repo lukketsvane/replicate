@@ -1,33 +1,29 @@
 "use client";
-// ConfigAdd.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { PlusCircle } from 'lucide-react';
 import Image from 'next/image';
 
 interface ConfigAddProps {
   onAdd: (config: { name: string; systemPrompt: string; avatar: string }) => void;
-  onClose: () => void; // Added onClose function
+  onClose: () => void;
 }
 
 export default function ConfigAdd({ onAdd, onClose }: ConfigAddProps) {
   const [configName, setConfigName] = useState('');
   const [systemPrompt, setSystemPrompt] = useState('');
   const [avatarURL, setAvatarURL] = useState('');
-  const configAddRef = useRef<HTMLDivElement>(null); // Added ref to capture clicks outside of the config window
+  const configAddRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Add event listener to capture clicks outside of the config window
     const handleClickOutside = (event: MouseEvent) => {
       if (configAddRef.current && !configAddRef.current.contains(event.target as Node)) {
-        onClose(); // Close the config window
+        onClose();
       }
     };
 
-    // Attach the event listener
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      // Remove the event listener when the component unmounts
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [onClose]);
@@ -38,7 +34,7 @@ export default function ConfigAdd({ onAdd, onClose }: ConfigAddProps) {
       systemPrompt: systemPrompt,
       avatar: avatarURL,
     };
-    
+
     const response = await fetch('/api/configurations', {
       method: 'POST',
       headers: {
@@ -52,13 +48,13 @@ export default function ConfigAdd({ onAdd, onClose }: ConfigAddProps) {
       setConfigName('');
       setSystemPrompt('');
       setAvatarURL('');
-      onClose(); // Close the config window
     } else {
       console.error('Failed to save the configuration');
     }
   };
 
   return (
+    
     <div className="fixed inset-0 z-30 flex items-center justify-center p-4">
       <div ref={configAddRef} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <div className="mb-4">

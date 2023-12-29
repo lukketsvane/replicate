@@ -6,6 +6,15 @@ import Sidebar from './components/sidebar';
 import EmptyChatMessage from './components/EmptyChatMessage';
 import Suggestions from './components/suggestions';
 
+
+const topBarStyle = {
+  position: 'sticky',
+  top: 0,
+  zIndex: 999, // Add z-index to ensure it stays above other content
+  backgroundColor: 'white', // Set the background color
+};
+
+
 export default function Page() {
   const [prompt, setPrompt] = useState<string>('');
   const [systemPrompt, setSystemPrompt] = useState<string>(
@@ -17,8 +26,8 @@ export default function Page() {
   const endOfMessagesRef = useRef<null | HTMLDivElement>(null);
   const systemPromptRef = useRef<null | HTMLDivElement>(null);
   const [selectedConfigName, setSelectedConfigName] = useState('');
-  const [selectedConfigDescription, setSelectedConfigDescription] = useState('');
-
+  const [selectedConfigDescription, setSelectedConfigDescription] = useState(''); // Corrected variable name
+  
   const [rows, setRows] = useState(1);
 
   const handleInput = (e) => {
@@ -96,12 +105,13 @@ export default function Page() {
 
   return (
     <motion.div
-        className="flex flex-col h-screen justify-between"
-        style={{ backgroundColor: '#FFFFFF' }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
+      className="flex flex-col h-screen justify-between"
+      style={{ backgroundColor: '#FFFFFF' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
     >
+      
     <Sidebar setSystemPrompt={setSystemPrompt} clearMessages={setMessages} setSelectedConfigName={setSelectedConfigName} />        <div className="text-center p-4 border-b border-gray-200">
             <h1 className="text-xl font-medium">Dolphin</h1>
             <Edit3 className="cursor-pointer absolute top-4 right-4" onClick={handleNewChat} />
@@ -148,12 +158,15 @@ export default function Page() {
                     rows={rows}
                     disabled={isLoading}
                 />
+                     
                 <Send className="absolute right-4 bottom-2 cursor-pointer" onClick={handleSubmit} />
+                
             </div>
+            <div className="text-center text-xs text-gray-500 mt-3 ">
+                  Dolphin can make mistakes. Made with love by @lukketsvane
+                </div>
+
         </div>
-      <div className="text-center text-xs text-gray-500 p-2">
-        Dolphin can make mistakes. Made with love by @lukketsvane
-      </div>
       {showSystemPrompt && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"

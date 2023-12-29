@@ -99,7 +99,7 @@ export default function Page() {
       transition={{ duration: 0.5 }}
     >
       <Sidebar setSystemPrompt={setSystemPrompt} />
-      <div className="text-center p-4 border border-gray-200">
+      <div className="text-center p-4 border-b border-gray-200">
         <h1 className="text-xl font-medium">Dolphin</h1>
         <Edit3 className="cursor-pointer absolute top-4 right-4" onClick={handleNewChat} />
       </div>
@@ -123,7 +123,7 @@ export default function Page() {
       <div className="px-4 py-2 bg-gray-50">
         <div className="relative flex items-end">
           <Paperclip
-            className="absolute left-3 mb-2 bottom-2. cursor-pointer"
+            className="absolute left-3 mb-2 bottom-0.5 cursor-pointer"
             onClick={handleSystemPromptOpen}
             style={{ transform: 'rotate(315deg)' }}
           />
@@ -144,7 +144,6 @@ export default function Page() {
       <div className="text-center text-xs text-gray-500 p-2">
         Dolphin can make mistakes. Made with love by @lukketsvane
       </div>
-
       {showSystemPrompt && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"

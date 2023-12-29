@@ -1,14 +1,8 @@
+"use cliunt";
 import React, { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
-import Image from 'next/image';
 
-// Define a TypeScript interface for the props if you're using TypeScript
-interface ConfigAddProps {
-  onAdd: (config: { name: string; systemPrompt: string; avatar: string }) => void;
-}
-
-// Use the interface for typing the function component
-export default function ConfigAdd({ onAdd }: ConfigAddProps) {
+export default function ConfigAdd({ onAdd }) {
   const [configName, setConfigName] = useState('');
   const [systemPrompt, setSystemPrompt] = useState('');
   const [avatarURL, setAvatarURL] = useState('');

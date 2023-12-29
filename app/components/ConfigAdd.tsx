@@ -1,16 +1,36 @@
 "use client";
-import React, { useState } from 'react';
+// ConfigAdd.tsx
+import React, { useState, useEffect, useRef } from 'react';
 import { PlusCircle } from 'lucide-react';
 import Image from 'next/image';
 
 interface ConfigAddProps {
   onAdd: (config: { name: string; systemPrompt: string; avatar: string }) => void;
+  onClose: () => void; // Added onClose function
 }
 
-export default function ConfigAdd({ onAdd }: ConfigAddProps) {
+export default function ConfigAdd({ onAdd, onClose }: ConfigAddProps) {
   const [configName, setConfigName] = useState('');
   const [systemPrompt, setSystemPrompt] = useState('');
   const [avatarURL, setAvatarURL] = useState('');
+  const configAddRef = useRef<HTMLDivElement>(null); // Added ref to capture clicks outside of the config window
+
+  useEffect(() => {
+    // Add event listener to capture clicks outside of the config window
+    const handleClickOutside = (event: MouseEvent) => {
+      if (configAddRef.current && !configAddRef.current.contains(event.target as Node)) {
+        onClose(); // Close the config window
+      }
+    };
+
+    // Attach the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      // Remove the event listener when the component unmounts
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
 
   const handleAddConfig = async () => {
     const newConfig = {
@@ -32,6 +52,7 @@ export default function ConfigAdd({ onAdd }: ConfigAddProps) {
       setConfigName('');
       setSystemPrompt('');
       setAvatarURL('');
+      onClose(); // Close the config window
     } else {
       console.error('Failed to save the configuration');
     }
@@ -39,7 +60,7 @@ export default function ConfigAdd({ onAdd }: ConfigAddProps) {
 
   return (
     <div className="fixed inset-0 z-30 flex items-center justify-center p-4">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <div ref={configAddRef} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <div className="mb-4">
           <label htmlFor="configName" className="block text-sm font-medium text-gray-700">Configuration Name</label>
           <input
@@ -55,7 +76,7 @@ export default function ConfigAdd({ onAdd }: ConfigAddProps) {
           <input
             type="text"
             id="systemPrompt"
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 h-32" // Increased height
             value={systemPrompt}
             onChange={(e) => setSystemPrompt(e.target.value)}
           />

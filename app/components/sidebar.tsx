@@ -74,7 +74,7 @@ export default function Sidebar({ setSystemPrompt }) {
       />
 
       <div
-        className={`fixed top-0 left-0 w-64 h-full bg-white p-4 overflow-y-auto z-20 transform ${
+        className={`fixed top-0 left-0 w-124 h-full bg-white p-4 overflow-y-auto z-20 transform ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } transition-transform duration-300 ease-in-out`}
       >
@@ -86,7 +86,7 @@ export default function Sidebar({ setSystemPrompt }) {
           {configurations.map((config) => (
             <li
               key={config.id}
-              className="flex items-center p-2 hover:bg-gray-100 cursor-pointer relative"
+              className="flex items-center p-2 hover-bg-gray-100 cursor-pointer relative"
               onClick={() => handleConfigurationClick(config)}
             >
               <img src={config.avatar} alt="avatar" className="w-8 h-8 rounded-full mr-2" />
@@ -100,14 +100,17 @@ export default function Sidebar({ setSystemPrompt }) {
             </li>
           ))}
         </ul>
+
+
+        {/* Moved the "Create Config" button inside the sidebar */}
+        <div className="absolute bottom-0 left-0 w-154 h-16 bg-white p-4 flex items-center justify-between cursor-pointer z-20 border-t" onClick={() => setShowConfigAdd(true)}>
+          <PlusCircle className="w-6 h-6 text-gray-700" />÷
+          
+          <span className="text-gray-700 font-semibold">Create Config</span>
+        </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 w-64 h-16 bg-white p-4 flex items-center justify-between cursor-pointer z-20 border-t" onClick={() => setShowConfigAdd(true)}>
-        <PlusCircle className="w-6 h-6 text-gray-700" /> 
-        <span className="text-gray-700 font-semibold">Create Config</span>
-      </div>
-
-      {showConfigAdd && <ConfigAdd onAdd={handleAddNewConfig} />}
+      {showConfigAdd && <ConfigAdd onAdd={handleAddNewConfig} onClose={handleSidebarClose} />}
     </>
   );
 }

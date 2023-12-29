@@ -77,7 +77,6 @@ export default function Page() {
     }
   };
 
-  // Add or remove the event listener for clicking outside the system prompt window
   useEffect(() => {
     if (showSystemPrompt) {
       document.addEventListener('mousedown', handleSystemPromptClose);

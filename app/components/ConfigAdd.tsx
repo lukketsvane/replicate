@@ -1,8 +1,13 @@
-"use cliunt";
+"use client";
 import React, { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
+import Image from 'next/image';
 
-export default function ConfigAdd({ onAdd }) {
+interface ConfigAddProps {
+  onAdd: (config: { name: string; systemPrompt: string; avatar: string }) => void;
+}
+
+export default function ConfigAdd({ onAdd }: ConfigAddProps) {
   const [configName, setConfigName] = useState('');
   const [systemPrompt, setSystemPrompt] = useState('');
   const [avatarURL, setAvatarURL] = useState('');
@@ -13,7 +18,7 @@ export default function ConfigAdd({ onAdd }) {
       systemPrompt: systemPrompt,
       avatar: avatarURL,
     };
-    // API call to add the new configuration to the database
+    
     const response = await fetch('/api/configurations', {
       method: 'POST',
       headers: {
@@ -23,7 +28,7 @@ export default function ConfigAdd({ onAdd }) {
     });
 
     if (response.ok) {
-      onAdd(newConfig); // Update parent state
+      onAdd(newConfig);
       setConfigName('');
       setSystemPrompt('');
       setAvatarURL('');

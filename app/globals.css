@@ -43,3 +43,14 @@ body {
         padding-right: 1rem; /* 16px */
     }
 }
+
+/* Add this in your global stylesheet or as inline styles within the Suggestions.tsx */
+button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: medium;
+    background-color: #F9FAFB; /* This is a Tailwind CSS color, adjust as needed */
+  }
+  

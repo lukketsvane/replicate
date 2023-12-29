@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Paperclip, Send, Edit3 } from 'lucide-react';
 import Sidebar from './components/sidebar';
 import EmptyChatMessage from './components/EmptyChatMessage';
+import Suggestions from './components/suggestions';
 
 export default function Page() {
   const [prompt, setPrompt] = useState<string>('');
@@ -16,6 +17,8 @@ export default function Page() {
   const endOfMessagesRef = useRef<null | HTMLDivElement>(null);
   const systemPromptRef = useRef<null | HTMLDivElement>(null);
   const [selectedConfigName, setSelectedConfigName] = useState('');
+  const [selectedConfigDescription, setSelectedConfigDescription] = useState('');
+
   const [rows, setRows] = useState(1);
 
   const handleInput = (e) => {
@@ -120,7 +123,10 @@ export default function Page() {
                 </div>
                 ))
                 ) : (
-                  <EmptyChatMessage configName={selectedConfigName} />
+                <EmptyChatMessage configName={selectedConfigName} configDescription={selectedConfigDescription} />
+
+
+                  
                 )}
                 <div ref={endOfMessagesRef} />
               </div>

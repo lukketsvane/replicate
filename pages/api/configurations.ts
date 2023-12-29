@@ -7,10 +7,10 @@ export default async function handler(req, res) {
 
     switch (method) {
       case 'POST': {
-        const { name, systemPrompt, avatar } = req.body;
+        const { name, systemPrompt, avatar, description, starters } = req.body;
         await sql`
-          INSERT INTO configurations (name, system_prompt, avatar)
-          VALUES (${name}, ${systemPrompt}, ${avatar})
+          INSERT INTO configurations (name, system_prompt, avatar, description, starters)
+          VALUES (${name}, ${systemPrompt}, ${avatar}, ${description}, ${starters})
         `;
         return res.status(201).json({ message: 'Configuration created successfully.' });
       }

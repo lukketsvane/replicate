@@ -1,16 +1,19 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { PlusCircle, Camera } from 'lucide-react';
+import Image from 'next/image';
 
 interface ConfigAddProps {
-  onAdd: (config: { name: string; systemPrompt: string; avatar: string }) => void;
+  onAdd: (config: { name: string; description: string; systemPrompt: string; avatar: string; starters: string[] }) => void;
   onClose: () => void;
 }
 
 export default function ConfigAdd({ onAdd, onClose }: ConfigAddProps) {
   const [configName, setConfigName] = useState('');
+  const [description, setDescription] = useState('');
   const [systemPrompt, setSystemPrompt] = useState('');
   const [avatarURL, setAvatarURL] = useState('');
+  const [starters, setStarters] = useState(['', '', '', '']);
   const [isUploading, setIsUploading] = useState(false);
   const inputFileRef = useRef<HTMLInputElement>(null);
   const configAddRef = useRef<HTMLDivElement>(null);
@@ -32,10 +35,11 @@ export default function ConfigAdd({ onAdd, onClose }: ConfigAddProps) {
   const handleAddConfig = async () => {
     const newConfig = {
       name: configName,
+      description: description, // New field
       systemPrompt: systemPrompt,
       avatar: avatarURL,
+      starters: starters.filter(starter => starter.trim() !== '') // Filter out empty strings
     };
-
     const response = await fetch('/api/configurations', {
       method: 'POST',
       headers: {
@@ -52,6 +56,9 @@ export default function ConfigAdd({ onAdd, onClose }: ConfigAddProps) {
     } else {
       console.error('Failed to save the configuration');
     }
+  };
+  const updateStarter = (index: number, value: string) => {
+    setStarters(starters.map((starter, i) => (i === index ? value : starter)));
   };
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,6 +102,14 @@ export default function ConfigAdd({ onAdd, onClose }: ConfigAddProps) {
             onChange={(e) => setConfigName(e.target.value)}
           />
         </div>
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
+        <input
+          type="text"
+          id="description"
+          className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
         <div className="mb-4">
           <label htmlFor="systemPrompt" className="block text-sm font-medium text-gray-700">System Prompt</label>
           <input
@@ -106,11 +121,27 @@ export default function ConfigAdd({ onAdd, onClose }: ConfigAddProps) {
           />
         </div>
         <div className="mb-4">
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700">Conversation starters</label>
+
+              <div className="grid grid-cols-1 gap-1 mb-4">
+        {starters.map((starter, index) => (
+          <input
+            key={index}
+            type="text"
+            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            placeholder={`Conversation starter ${index + 1}`}
+            value={starter}
+            onChange={(e) => updateStarter(index, e.target.value)}
+          />
+        ))}
+      </div>
+      </div>
+        <div className="mb-4">
           <label htmlFor="avatarImage" className="block text-sm font-medium text-gray-700">Avatar Image</label>
           <div className="mt-1 flex items-center">
             <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100">
-              {avatarURL ? (
-                <img src={avatarURL} alt="Avatar preview" className="h-12 w-12" />
+            {avatarURL ? (
+                <Image src={avatarURL} alt="Avatar preview" width={48} height={48} />
               ) : isUploading ? (
                 <span>Uploading...</span>
               ) : (

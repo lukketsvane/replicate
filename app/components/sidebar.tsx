@@ -2,12 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { X, Menu, PlusCircle, MoreVertical, Trash2 } from 'lucide-react';
 import ConfigAdd from './ConfigAdd';
+import Image from 'next/image';
 
 interface Configuration {
   id: number;
   name: string;
   systemPrompt: string;
   avatar: string;
+  description: string; // Add this
+  starters: string[]; // Add this
 }
 interface SidebarProps {
   setSystemPrompt: (prompt: string) => void;
@@ -94,11 +97,11 @@ export default function Sidebar({ setSystemPrompt, clearMessages, setSelectedCon
       />
 
       <div
-        className={`fixed top-0 left-0 w-64 h-full bg-white p-4 overflow-y-auto z-20 transform ${
+        className={`fixed top-0 left-0 w-64 h-full bg-white p-4  overflow-y-auto z-20 transform ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } transition-transform duration-300 ease-in-out`}
       >
-        <button onClick={handleSidebarClose} className="absolute top-4 right-4">
+        <button onClick={handleSidebarClose} className="absolute top-4  right-4">
           <X className="w-6 h-6" />
         </button>
 
@@ -106,11 +109,10 @@ export default function Sidebar({ setSystemPrompt, clearMessages, setSelectedCon
           {configurations.map((config) => (
             <li
               key={config.id}
-              className="flex items-center p-2 hover:bg-gray-100 cursor-pointer relative"
+              className="flex items-center p-2 hover:bg-gray-100  cursor-pointer relative"
               onClick={() => handleConfigurationClick(config)}
             >
-              <img src={config.avatar} alt="avatar" className="w-8 h-8 rounded-full mr-2" />
-              <span className="flex-1">{config.name}</span>
+              <Image src={config.avatar} alt="avatar" width={32} height={32} className="rounded-full mr-2" />              <span className="flex-1">{config.name}</span>
               <button onClick={(e) => openDeleteConfirm(config, e)} className="p-1">
                 <MoreVertical className="w-5 h-5" />
               </button>
@@ -118,7 +120,7 @@ export default function Sidebar({ setSystemPrompt, clearMessages, setSelectedCon
           ))}
         </ul>
 
-        <div className="absolute bottom-0 left-0 w-full h-16 bg-white p-4 flex items-center justify-between cursor-pointer z-20 border-t" onClick={() => setShowConfigAdd(true)}>
+        <div className="absolute bottom-0 left-0 w-full h-16  bg-white p-4 flex items-center justify-between cursor-pointer z-20 border-t" onClick={() => setShowConfigAdd(true)}>
           <PlusCircle className="w-6 h-6 text-gray-700" />
           <span className="text-gray-700 font-semibold">Create Config</span>
         </div>

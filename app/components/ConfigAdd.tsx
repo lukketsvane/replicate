@@ -79,3 +79,4 @@ export default function ConfigAdd({ onAdd }) {
     </div>
   );
 }
+s

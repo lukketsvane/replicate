@@ -9,9 +9,12 @@ interface Configuration {
   systemPrompt: string;
   avatar: string;
 }
-
-export default function Sidebar({ setSystemPrompt }) {
-  const [isOpen, setIsOpen] = useState(false);
+interface SidebarProps {
+  setSystemPrompt: (prompt: string) => void;
+  clearMessages: (messages: []) => void; // Add this
+  setSelectedConfigName: (name: string) => void; // And this
+}
+export default function Sidebar({ setSystemPrompt, clearMessages, setSelectedConfigName }: SidebarProps) {  const [isOpen, setIsOpen] = useState(false);
   const [showConfigAdd, setShowConfigAdd] = useState(false);
   const [configurations, setConfigurations] = useState<Configuration[]>([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -44,6 +47,8 @@ export default function Sidebar({ setSystemPrompt }) {
 
   const handleConfigurationClick = (config: Configuration) => {
     setSystemPrompt(config.systemPrompt);
+    clearMessages([]); // Clear messages when a configuration is selected
+    setSelectedConfigName(config.name); // Set the selected configuration name
     handleSidebarClose();
   };
 

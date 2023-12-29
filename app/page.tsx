@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Paperclip, Send, Edit3 } from 'lucide-react';
 import Sidebar from './components/sidebar';
+import EmptyChatMessage from './components/EmptyChatMessage';
 
 export default function Page() {
   const [prompt, setPrompt] = useState<string>('');
@@ -14,7 +15,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const endOfMessagesRef = useRef<null | HTMLDivElement>(null);
   const systemPromptRef = useRef<null | HTMLDivElement>(null);
-
+  const [selectedConfigName, setSelectedConfigName] = useState('');
   const [rows, setRows] = useState(1);
 
   const handleInput = (e) => {
@@ -98,14 +99,14 @@ export default function Page() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
     >
-        <Sidebar setSystemPrompt={setSystemPrompt} />
-        <div className="text-center p-4 border-b border-gray-200">
+    <Sidebar setSystemPrompt={setSystemPrompt} clearMessages={setMessages} setSelectedConfigName={setSelectedConfigName} />        <div className="text-center p-4 border-b border-gray-200">
             <h1 className="text-xl font-medium">Dolphin</h1>
             <Edit3 className="cursor-pointer absolute top-4 right-4" onClick={handleNewChat} />
         </div>
         <div className="flex-grow overflow-auto p-4" style={{ marginBottom: '100px' }}>
-            {messages.map((message, index) => (
-                <div
+          {messages.length > 0 ? (
+            messages.map((message, index) => (
+              <div
                     key={index}
                     className={`flex ${message.sender === 'AI' ? 'justify-start' : 'justify-end'} my-2`}
                 >
@@ -117,9 +118,12 @@ export default function Page() {
                         {message.content}
                     </div>
                 </div>
-            ))}
-            <div ref={endOfMessagesRef} />
-        </div>
+                ))
+                ) : (
+                  <EmptyChatMessage configName={selectedConfigName} />
+                )}
+                <div ref={endOfMessagesRef} />
+              </div>
         <div className="fixed bottom-0 left-0 right-0 px-4 py-2 bg-gray-50">
             <div className="relative flex items-end">
                 <Paperclip

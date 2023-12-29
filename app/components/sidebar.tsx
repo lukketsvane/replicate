@@ -4,8 +4,11 @@ import { X, Menu, PlusCircle, MoreVertical, Edit3 } from 'lucide-react';
 import ConfigAdd from './ConfigAdd';
 import Image from 'next/image';
 
-export default function Sidebar({ setSystemPrompt }) {
-  const [isOpen, setIsOpen] = useState(false);
+
+interface SidebarProps {
+  setSystemPrompt: (prompt: string) => void;
+}
+export default function Sidebar({ setSystemPrompt }: SidebarProps) {  const [isOpen, setIsOpen] = useState(false);
   const [showConfigAdd, setShowConfigAdd] = useState(false);
   const [configurations, setConfigurations] = useState([]);
 

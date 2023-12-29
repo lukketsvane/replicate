@@ -2,22 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { X, Menu, PlusCircle, MoreVertical, Edit3 } from 'lucide-react';
 import ConfigAdd from './ConfigAdd';
-import Image from 'next/image';
-interface Configuration {
-  id: string; // or number, depending on how your ID is structured
-  name: string;
-  systemPrompt: string;
-  avatar: string; // assuming there is an avatar URL
-}
 
-interface SidebarProps {
-  setSystemPrompt: (prompt: string) => void;
-}
-
-export default function Sidebar({ setSystemPrompt }: SidebarProps) {
-  const [configurations, setConfigurations] = useState<Configuration[]>([]);
-  const [showConfigAdd, setShowConfigAdd] = useState(false);
+export default function Sidebar({ setSystemPrompt }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showConfigAdd, setShowConfigAdd] = useState(false);
+  const [configurations, setConfigurations] = useState([]);
 
   useEffect(() => {
     const fetchConfigurations = async () => {
@@ -36,20 +25,18 @@ export default function Sidebar({ setSystemPrompt }: SidebarProps) {
     fetchConfigurations();
   }, []);
 
-  const handleAddNewConfig = (newConfig: Configuration) => {
+  const handleAddNewConfig = (newConfig: any) => {
     setConfigurations([...configurations, newConfig]);
     setShowConfigAdd(false);
   };
 
-
   const handleSidebarOpen = () => setIsOpen(true);
   const handleSidebarClose = () => setIsOpen(false);
 
-  const handleConfigurationClick = (config: Configuration) => {
+  const handleConfigurationClick = (config) => {
     setSystemPrompt(config.system_prompt);
     handleSidebarClose();
   };
-  
 
   const handleDeleteConfig = async (configId) => {
     try {
@@ -72,13 +59,17 @@ export default function Sidebar({ setSystemPrompt }: SidebarProps) {
       </button>
 
       <div
-        className={`fixed inset-0 z-10 transition-opacity duration-300 ease-in-out ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        className={`fixed inset-0 z-10 transition-opacity duration-300 ease-in-out ${
+          isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
         style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
         onClick={handleSidebarClose}
       />
 
       <div
-        className={`fixed top-0 left-0 w-146 h-full bg-white p-4 overflow-y-auto z-20 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}
+        className={`fixed top-0 left-0 w-64 h-full bg-white p-4 overflow-y-auto z-20 transform ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        } transition-transform duration-300 ease-in-out`}
       >
         <button onClick={handleSidebarClose} className="absolute top-4 right-4">
           <X className="w-6 h-6" />
@@ -91,13 +82,9 @@ export default function Sidebar({ setSystemPrompt }: SidebarProps) {
               className="flex items-center p-2 hover:bg-gray-100 cursor-pointer relative"
               onClick={() => handleConfigurationClick(config)}
             >
-              <Image
-                src={config.avatar}
-                alt="avatar"
-                width={32} // Set the width as needed
-                height={32} // Set the height as needed
-                className="rounded-full"
-              />
+              {/* Disable linting for the following line */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={config.avatar} alt="avatar" className="w-8 h-8 rounded-full mr-2" />
               <span className="flex-1">{config.name}</span>
               <button onClick={(e) => { e.stopPropagation(); /* other code to show options */ }} className="p-1">
                 <MoreVertical className="w-5 h-5" />
@@ -108,11 +95,11 @@ export default function Sidebar({ setSystemPrompt }: SidebarProps) {
             </li>
           ))}
         </ul>
-        <div className="fixed bottom-0 left-0 w-104 h-16 bg-white p-4 flex items-center justify-between cursor-pointer z-20 border-t"
-     onClick={() => setShowConfigAdd(true)}>
+      </div>
+
+      <div className="fixed bottom-0 left-0 w-64 h-16 bg-white p-4 flex items-center justify-between cursor-pointer z-20 border-t" onClick={() => setShowConfigAdd(true)}>
         <PlusCircle className="w-6 h-6 text-gray-700" /> 
         <span className="text-gray-700 font-semibold">Create Config</span>
-      </div>
       </div>
 
       {showConfigAdd && <ConfigAdd onAdd={handleAddNewConfig} />}

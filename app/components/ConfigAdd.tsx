@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import { PlusCircle } from 'lucide-react';
-import Image from 'next/image';
+import { PlusCircle, Camera } from 'lucide-react';
 
 interface ConfigAddProps {
   onAdd: (config: { name: string; systemPrompt: string; avatar: string }) => void;
@@ -12,6 +11,8 @@ export default function ConfigAdd({ onAdd, onClose }: ConfigAddProps) {
   const [configName, setConfigName] = useState('');
   const [systemPrompt, setSystemPrompt] = useState('');
   const [avatarURL, setAvatarURL] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const inputFileRef = useRef<HTMLInputElement>(null);
   const configAddRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -53,8 +54,35 @@ export default function ConfigAdd({ onAdd, onClose }: ConfigAddProps) {
     }
   };
 
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+
+      setIsUploading(true);
+      try {
+        const response = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+          method: 'POST',
+          body: file,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setAvatarURL(data.url);
+        } else {
+          console.error('Failed to upload image');
+        }
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+      setIsUploading(false);
+    }
+  };
+
+  const triggerFileInput = () => {
+    inputFileRef.current?.click();
+  };
+
   return (
-    
     <div className="fixed inset-0 z-30 flex items-center justify-center p-4">
       <div ref={configAddRef} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <div className="mb-4">
@@ -72,20 +100,40 @@ export default function ConfigAdd({ onAdd, onClose }: ConfigAddProps) {
           <input
             type="text"
             id="systemPrompt"
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 h-32" // Increased height
+            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 h-32"
             value={systemPrompt}
             onChange={(e) => setSystemPrompt(e.target.value)}
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="avatarURL" className="block text-sm font-medium text-gray-700">Avatar URL</label>
-          <input
-            type="text"
-            id="avatarURL"
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            value={avatarURL}
-            onChange={(e) => setAvatarURL(e.target.value)}
-          />
+          <label htmlFor="avatarImage" className="block text-sm font-medium text-gray-700">Avatar Image</label>
+          <div className="mt-1 flex items-center">
+            <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100">
+              {avatarURL ? (
+                <img src={avatarURL} alt="Avatar preview" className="h-12 w-12" />
+              ) : isUploading ? (
+                <span>Uploading...</span>
+              ) : (
+                <Camera className="w-12 h-12 text-gray-300" aria-hidden="true" />
+              )}
+            </span>
+            <button
+              type="button"
+              className="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              onClick={triggerFileInput}
+            >
+              <Camera className="w-5 h-5 mr-2" aria-hidden="true" />
+              Upload
+            </button>
+            <input
+              ref={inputFileRef}
+              id="avatarImage"
+              name="avatarImage"
+              type="file"
+              className="sr-only"
+              onChange={handleImageUpload}
+            />
+          </div>
         </div>
         <div className="flex justify-end mt-4 space-x-2">
           <button
